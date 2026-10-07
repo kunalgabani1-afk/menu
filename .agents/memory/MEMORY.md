@@ -1,0 +1,1 @@
+- [Imported project scope](imported-project-scope.md) — preserve the imported application; only launch it unless the user requests changes.

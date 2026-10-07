@@ -1,6 +1,16 @@
-# [Project name]
+# Tableline / QR Menu SaaS
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+Imported restaurant QR-menu application. Import setup is limited to running the existing app; preserve its application code, design, and structure.
+
+## Verified import launch
+
+- Dependencies: `npm install --package-lock=false --legacy-peer-deps`. Existing manifests and the imported lockfile are preserved.
+- Frontend workflow: `artifacts/qr-menu-saas: web`, using `pnpm --filter @workspace/qr-menu-saas run dev` on port 25680.
+- API workflow: `artifacts/api-server: API Server`, using `pnpm --filter @workspace/api-server run dev` on port 8080, routed at `/api`.
+- The imported frontend also starts its existing local API on port 5000 for its Vite proxy.
+- The landing page and `/api/health` were verified through the development preview. Signed-in screens were not verified.
+- Firebase configuration is needed for sign-in; Gemini configuration is needed for AI features. No credentials were invented or added during import setup.
+- The remaining sections below are inherited template notes, not verified setup instructions.
 
 ## Run & Operate
 

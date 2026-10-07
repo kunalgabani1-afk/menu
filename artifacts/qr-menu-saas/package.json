@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "node ../api-server/build.mjs && vite --config vite.config.ts --host 0.0.0.0",
+    "dev": "node ../api-server/build.mjs && vite --config vite.config.ts --host 0.0.0.0 --port 25680 --strictPort",
     "build": "vite build --config vite.config.ts",
     "serve": "vite preview --config vite.config.ts --host 0.0.0.0",
     "typecheck": "tsc -p tsconfig.json --noEmit"

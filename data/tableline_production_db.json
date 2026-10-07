@@ -9,7 +9,11 @@
       "name": "admin",
       "email": "admin@gmail.com",
       "restaurants": {},
-      "role": "platform_admin"
+      "role": "platform_admin",
+      "customClaims": {
+        "role": "platform_admin",
+        "platformAdmin": true
+      }
     },
     "uid_96675bb9a0d0": {
       "uid": "uid_96675bb9a0d0",
@@ -35,7 +39,12 @@
     "94xY8p303kXm4U163h5Ew5vjZ0H3": {
       "name": "Vivek",
       "email": "vivekdhola695@gmail.com",
-      "restaurants": {}
+      "restaurants": {},
+      "customClaims": {
+        "role": "platform_admin",
+        "platformAdmin": true
+      },
+      "role": "platform_admin"
     },
     "uid_a2c9b89b1658": {
       "name": "Aarav Sharma",
