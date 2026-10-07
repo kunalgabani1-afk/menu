@@ -1,0 +1,369 @@
+{
+  "platformAdmins": {
+    "3P8DAiMXe3QBE4C43QOgDMrfA6S2": true,
+    "94xY8p303kXm4U163h5Ew5vjZ0H3": true,
+    "VEOaiqcEmIU7yBfq0uYqMovkxNz2": true
+  },
+  "users": {
+    "3P8DAiMXe3QBE4C43QOgDMrfA6S2": {
+      "name": "admin",
+      "email": "admin@gmail.com",
+      "restaurants": {},
+      "role": "platform_admin"
+    },
+    "uid_96675bb9a0d0": {
+      "uid": "uid_96675bb9a0d0",
+      "email": "sutariyadeepak9@gmail.com",
+      "name": "Rahul",
+      "createdAt": 1789055811542,
+      "restaurants": {
+        "rest_WU5vdSA": {
+          "role": "owner",
+          "active": true,
+          "createdAt": 1789055811543
+        }
+      },
+      "customClaims": {
+        "restaurantIds": {
+          "rest_WU5vdSA": true
+        },
+        "restaurantRoles": {
+          "rest_WU5vdSA": "owner"
+        }
+      }
+    },
+    "94xY8p303kXm4U163h5Ew5vjZ0H3": {
+      "name": "Vivek",
+      "email": "vivekdhola695@gmail.com",
+      "restaurants": {}
+    },
+    "uid_a2c9b89b1658": {
+      "name": "Aarav Sharma",
+      "email": "aarav@urbanroast.com",
+      "restaurants": {
+        "rest_rEN0dEs": {
+          "role": "owner",
+          "active": true,
+          "createdAt": 1789146425933
+        }
+      },
+      "customClaims": {
+        "restaurantIds": {
+          "rest_rEN0dEs": true
+        },
+        "restaurantRoles": {
+          "rest_rEN0dEs": "owner"
+        }
+      }
+    },
+    "VEOaiqcEmIU7yBfq0uYqMovkxNz2": {
+      "name": "Platform Admin",
+      "email": "vivekdhola695@gmail.com",
+      "role": "platform_admin",
+      "restaurants": {}
+    }
+  },
+  "restaurantSlugs": {
+    "cafe-1": {
+      "restaurantId": "rest_WU5vdSA",
+      "active": true
+    },
+    "the-roast-room": {
+      "restaurantId": "rest_WU5vdSA",
+      "active": true
+    }
+  },
+  "restaurants": {
+    "rest_WU5vdSA": {
+      "profile": {
+        "name": "The Roast Room",
+        "slug": "the-roast-room",
+        "email": "sutariyadeepak9@gmail.com",
+        "phone": "+911234567890",
+        "city": "Surat",
+        "timezone": "Asia/Kolkata",
+        "currency": "INR",
+        "plan": "pro",
+        "createdAt": 1789055811543,
+        "updatedAt": 1789055811543
+      },
+      "settings": {
+        "orderingEnabled": true,
+        "menuEnabled": true,
+        "restaurantStatus": "active"
+      },
+      "members": {
+        "uid_96675bb9a0d0": {
+          "role": "owner",
+          "active": true,
+          "createdAt": 1789055811543
+        }
+      },
+      "tables": {
+        "table_OmMV8QE": {
+          "tableNumber": "Table 01",
+          "slug": "table-01",
+          "active": true,
+          "pinHash": "7951bef2e7653b69bae6bbe41ac28d06:5a552c4eb64268ecc40f42d076515fc8e7e311ce1d55d3e8923ac958c2f30d16ce56c0d47cf03abd48192f9cca92b97553b19929edb90f83ee3844930b124695",
+          "createdAt": 1789055811543,
+          "updatedAt": 1789055811543
+        },
+        "table_OfaK4tU": {
+          "tableNumber": "Table 02",
+          "slug": "table-02",
+          "active": true,
+          "pinHash": "68f0af02cdf4c33f70cf0e969a1c315a:a83a45b1b7516143d117d6b00433858092a3033c97ac6d7addc3a6c00e0a74d39d9fbbf278fe4e68d81fffdc0f6f7f47fda406ac1de2f7e64c029599d4dcf02e",
+          "createdAt": 1789055811543,
+          "updatedAt": 1789055811543
+        },
+        "table_kRrDJX8": {
+          "tableNumber": "Table 03",
+          "slug": "table-03",
+          "active": true,
+          "pinHash": "6b488f7f158d4abc6518f7fb4b7243d0:3cc743d0cd11bd87d5f38964e7b1f1d9efafde3440a3f1a060789c15807d435737a875e7c95409aadae970ddc47d60660907b48982a988875e9a683e9ed93af8",
+          "createdAt": 1789055811543,
+          "updatedAt": 1789055811543
+        },
+        "table_vXSqoiI": {
+          "tableNumber": "Table 04",
+          "slug": "table-04",
+          "active": true,
+          "pinHash": "0cddf140a7708cd3e49f21ba5fb263fc:d448b056b9f8da8ac57e087d1b1a9d398ded0256130200bb76c0d056cf033860c17595ea6ade9ded5b40499e2cca739240914f7079e9c95e6247581195b8713e",
+          "createdAt": 1789055811543,
+          "updatedAt": 1789055811543
+        },
+        "table_QvtMuyc": {
+          "tableNumber": "Table 05",
+          "slug": "table-05",
+          "active": true,
+          "pinHash": "ae882fde6b74cfcdf36f2962e09f3316:aa587a7c8dcac8fc1d2205dadfcafd31b4092a6da4c021e9bfd36943fb297f622bba800c9a43519685abfc5a0b7f333a75b36b3d4c386a4c74235cda5baf0399",
+          "createdAt": 1789055811543,
+          "updatedAt": 1789055811543
+        },
+        "table_Q1EDAmc": {
+          "tableNumber": "Table 06",
+          "slug": "table-06",
+          "active": true,
+          "pinHash": "555f5b0f76a1155e256082528e1cb54d:78c9704c4cabf658135b7550c9d976bdf9ec5f1f0f424519c6835197e3fe6fcfaba77822491f0bda2d078d41bc403334d268244945114865f29ba274050c5e5a",
+          "createdAt": 1789055811543,
+          "updatedAt": 1789055811543
+        },
+        "table_EHhyuqo": {
+          "tableNumber": "Table 07",
+          "slug": "table-07",
+          "active": true,
+          "pinHash": "59468391d701aebc85652a4b3e2f8ad2:82cef36e92712ff2fac9122623b7dee10fc3e403f772dd610ee9a248a3e15b7ebefc6915d982a474ac800d7c6695dfa2158f1c095de812b4885f82e4958e5a90",
+          "createdAt": 1789055811543,
+          "updatedAt": 1789055811543
+        },
+        "table_I3mXI_Y": {
+          "tableNumber": "Table 08",
+          "slug": "table-08",
+          "active": true,
+          "pinHash": "41877fe290d8809dccd726f74a10572a:4f7cfb854a44cf8fb5c3bf5eeff7035434bca64d2138516307037b8f09af9a0cd7ce006ce1e308e30c8cc9eba052f4be5510e3b40b0eceb23ea1719dbdec39d3",
+          "createdAt": 1789055811543,
+          "updatedAt": 1789055811543
+        },
+        "table_P6mPAxo": {
+          "tableNumber": "Table 09",
+          "slug": "table-09",
+          "active": true,
+          "pinHash": "2f56420a1c31d37f1a7a6d9270f352d3:e7576dfa7686ccdfdd08b94c86c643f83f10a6c6fdbe2f0239b4fadd70279911ac00e40bcca820251c5037641dce60a1f2c2b00e97afc0fb7ccf949820582ec7",
+          "createdAt": 1789055811543,
+          "updatedAt": 1789055811543
+        },
+        "table_lbhVpjg": {
+          "tableNumber": "Table 10",
+          "slug": "table-10",
+          "active": true,
+          "pinHash": "7682a83694dc11aa3b5f4ed44857f1a4:9dce120a8c1321ca91eb6779cd5ae8434e84215277ea5c46b2a6479c5f4dbcc9e628fca46f7851f6d9a76142ceca4eced36ed65bbdbd0571cccb216f712ce649",
+          "createdAt": 1789055811543,
+          "updatedAt": 1789055811543
+        },
+        "table_uLXp_bc": {
+          "tableNumber": "Table 11",
+          "slug": "table-11",
+          "active": true,
+          "pinHash": "b1d4a76666c97dd488982d7fbea43dba:3ef954d98547978896885274afa00c56be2778cb6763975b59274bbe5ca2886b3ba0896381735937f348890df8c05e6f2ae05c5693a823897f098905e5d392da",
+          "createdAt": 1789055811543,
+          "updatedAt": 1789055811543
+        },
+        "table_LlcqosA": {
+          "tableNumber": "Table 12",
+          "slug": "table-12",
+          "active": true,
+          "pinHash": "f89eafe0ac330c3f83f1af2d0cc37d4f:072ec7d92fc2e4dbae220cf95aa20750f5d6769a7a8de5a60b76071fa815f01f4775e674bfbaa054877fb32dfc32897bd245bdaa8d8d5af9cd2e13d2754f455b",
+          "createdAt": 1789055811543,
+          "updatedAt": 1789055811543
+        }
+      },
+      "auditLogs": {
+        "audit_9HOXpkY": {
+          "id": "audit_9HOXpkY",
+          "restaurantId": "rest_WU5vdSA",
+          "actorId": "3P8DAiMXe3QBE4C43QOgDMrfA6S2",
+          "actorEmail": "admin@gmail.com",
+          "actorRole": "platform_admin",
+          "action": "ONBOARDING_COMPLETED",
+          "resourceId": "rest_WU5vdSA",
+          "details": {
+            "fromLeadId": "lead_1789055738590_noqhg",
+            "slug": "cafe-1",
+            "passwordMode": "email",
+            "activationLinkGenerated": true
+          },
+          "timestamp": "2026-09-10T15:56:52.305Z"
+        }
+      },
+      "waiterRequests": {
+        "wreq_WPyeBNA": {
+          "id": "wreq_WPyeBNA",
+          "restaurantId": "rest_WU5vdSA",
+          "tableNumber": "Table 01",
+          "serviceType": "WATER",
+          "notes": "Warm water please",
+          "status": "PENDING",
+          "createdAt": 1789280387808
+        }
+      }
+    }
+  },
+  "menus": {},
+  "tables": {},
+  "orders": {},
+  "payments": {},
+  "analytics": {},
+  "platform": {
+    "leads": {
+      "lead_1789055738590_noqhg": {
+        "id": "lead_1789055738590_noqhg",
+        "restaurantName": "cafe-1",
+        "ownerName": "Rahul",
+        "phone": "+911234567890",
+        "email": "sutariyadeepak9@gmail.com",
+        "city": "Surat",
+        "numberOfTables": 12,
+        "requestedPlan": "starter",
+        "needs": "qr_ordering",
+        "message": "",
+        "status": "converted",
+        "notes": "",
+        "createdAt": 1789055738590,
+        "updatedAt": 1789055811543,
+        "convertedRestaurantId": "rest_WU5vdSA",
+        "convertedSlug": "cafe-1"
+      }
+    },
+    "plans": {
+      "starter": {
+        "id": "starter",
+        "name": "Starter",
+        "tier": "starter",
+        "priceMonthly": 299,
+        "priceYearly": 2990,
+        "currency": "INR",
+        "maxTables": 10,
+        "maxMenuItems": 50,
+        "features": {
+          "digital_menu": true,
+          "qr_ordering": true,
+          "live_orders_kot": false,
+          "kitchen_kds": false,
+          "staff_rbac": false,
+          "analytics_reporting": false,
+          "audit_logs": false
+        }
+      },
+      "growth": {
+        "id": "growth",
+        "name": "Growth",
+        "tier": "growth",
+        "priceMonthly": 999,
+        "priceYearly": 9990,
+        "currency": "INR",
+        "maxTables": 30,
+        "maxMenuItems": 200,
+        "features": {
+          "digital_menu": true,
+          "qr_ordering": true,
+          "live_orders_kot": true,
+          "kitchen_kds": true,
+          "staff_rbac": true,
+          "analytics_reporting": true,
+          "audit_logs": false
+        }
+      },
+      "scale": {
+        "id": "scale",
+        "name": "Scale",
+        "tier": "scale",
+        "priceMonthly": 1499,
+        "priceYearly": 14990,
+        "currency": "INR",
+        "maxTables": 100,
+        "maxMenuItems": 1000,
+        "features": {
+          "digital_menu": true,
+          "qr_ordering": true,
+          "live_orders_kot": true,
+          "kitchen_kds": true,
+          "staff_rbac": true,
+          "analytics_reporting": true,
+          "audit_logs": true
+        }
+      }
+    }
+  },
+  "contactVerificationTokens": {
+    "616753a23bec769abc4dc23c79da9ef4f51b2cc23b5e049bb07e358edf1d88ff": {
+      "email": "attacker_real_1790426882231@gmail.com",
+      "tokenHash": "616753a23bec769abc4dc23c79da9ef4f51b2cc23b5e049bb07e358edf1d88ff",
+      "verificationSessionId": "vs_attack2_1790426882232",
+      "purpose": "CONTACT_EMAIL_VERIFICATION",
+      "createdAt": 1790426882232,
+      "expiresAt": 1790428682232,
+      "usedAt": null,
+      "verifiedAt": null
+    },
+    "8bb047c6a6df590f378a45bb4a0c03e0eedf5302ff0c9a00a073a8fba1d36678": {
+      "email": "expired_user_1790426882267@gmail.com",
+      "tokenHash": "8bb047c6a6df590f378a45bb4a0c03e0eedf5302ff0c9a00a073a8fba1d36678",
+      "verificationSessionId": "vs_expired_1790426882267",
+      "purpose": "CONTACT_EMAIL_VERIFICATION",
+      "createdAt": 1790424482267,
+      "expiresAt": 1790426282267,
+      "usedAt": null,
+      "verifiedAt": null
+    },
+    "91db61e8cec10f1402c318bd3123c70dc920dcf50885890256bca1bdefd1698f": {
+      "email": "reused_token_1790426882279@gmail.com",
+      "tokenHash": "91db61e8cec10f1402c318bd3123c70dc920dcf50885890256bca1bdefd1698f",
+      "verificationSessionId": "vs_reused_1790426882279",
+      "purpose": "CONTACT_EMAIL_VERIFICATION",
+      "createdAt": 1790426882279,
+      "expiresAt": 1790428682279,
+      "usedAt": null,
+      "verifiedAt": null
+    },
+    "c910a4fe296d6b63e5d942a8dd21cfbb0ce9d7877aa3e67fe4bac14e010ef8ad": {
+      "email": "user_a_1790426882318@gmail.com",
+      "tokenHash": "c910a4fe296d6b63e5d942a8dd21cfbb0ce9d7877aa3e67fe4bac14e010ef8ad",
+      "verificationSessionId": "vs_userA_1790426882318",
+      "purpose": "CONTACT_EMAIL_VERIFICATION",
+      "createdAt": 1790426882318,
+      "expiresAt": 1790428682318,
+      "usedAt": null,
+      "verifiedAt": null
+    },
+    "a152fa3e68beb470bee2b510122134c6674a41de7760324f4f9f4f8ccb013411": {
+      "email": "user_a_legit@gmail.com",
+      "tokenHash": "a152fa3e68beb470bee2b510122134c6674a41de7760324f4f9f4f8ccb013411",
+      "verificationSessionId": "vs_user_a_legit_123",
+      "purpose": "CONTACT_EMAIL_VERIFICATION",
+      "createdAt": 1790426987603,
+      "expiresAt": 1790428787603,
+      "usedAt": null,
+      "verifiedAt": null
+    }
+  }
+}

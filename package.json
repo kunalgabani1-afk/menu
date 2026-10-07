@@ -1,0 +1,32 @@
+{
+  "name": "workspace",
+  "version": "0.0.0",
+  "license": "MIT",
+  "private": true,
+  "workspaces": [
+    "artifacts/*",
+    "lib/*",
+    "scripts"
+  ],
+  "scripts": {
+    "dev": "npm run build --workspace=@workspace/api-server && npm run dev --workspace=@workspace/qr-menu-saas",
+    "build": "npm run build --workspace=@workspace/api-server && npm run build --workspace=@workspace/qr-menu-saas",
+    "typecheck:libs": "tsc --build",
+    "typecheck": "npm run typecheck:libs",
+    "lint": "tsc --build"
+  },
+  "devDependencies": {
+    "@types/pdf-parse": "^1.1.5",
+    "prettier": "^3.9.6",
+    "typescript": "~5.9.3"
+  },
+  "dependencies": {
+    "@google/genai": "^2.21.0",
+    "@types/nodemailer": "^8.0.2",
+    "fuse.js": "^7.5.0",
+    "html5-qrcode": "^2.3.8",
+    "nodemailer": "^10.0.10",
+    "pdf-parse": "^2.4.5",
+    "xlsx": "^0.18.5"
+  }
+}

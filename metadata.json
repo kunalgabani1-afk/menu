@@ -1,0 +1,10 @@
+{
+  "name": "QR Menu SaaS",
+  "description": "Tableline - Simple, elegant QR menu and order management for restaurants. Effortless menu control, table QR codes, and live order tracking.",
+  "requestFramePermissions": [
+    "camera"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

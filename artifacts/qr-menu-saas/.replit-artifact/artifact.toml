@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "QR Menu SaaS"
+description = "A production-minded multi-tenant restaurant platform for managing branded menus, tables, QR codes, staff access, and customer-facing QR menus with strict tenant isolation."
+version = "1.0.0"
+id = "artifacts/qr-menu-saas"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 25680
+
+[services.development]
+run = "pnpm --filter @workspace/qr-menu-saas run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/qr-menu-saas", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/qr-menu-saas/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "25680"
+BASE_PATH = "/"

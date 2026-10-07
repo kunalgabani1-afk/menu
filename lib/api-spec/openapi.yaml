@@ -1,0 +1,788 @@
+openapi: 3.1.0
+info:
+  # Do not change the title, if the title changes, the import paths will be broken
+  title: Api
+  version: 0.1.0
+  description: Phase 1 API for a multi-tenant QR restaurant menu SaaS
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+  - name: auth
+  - name: platform
+  - name: restaurant
+  - name: public
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+  /auth/session:
+    get:
+      operationId: getAuthSession
+      tags: [auth]
+      summary: Resolve the current Firebase session
+      responses:
+        "200":
+          description: Session state
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthSession"
+  /auth/logout:
+    post:
+      operationId: logout
+      tags: [auth]
+      summary: End the current session
+      responses:
+        "204":
+          description: Session ended
+  /platform/restaurants:
+    get:
+      operationId: listPlatformRestaurants
+      tags: [platform]
+      summary: List restaurants for platform administrators
+      responses:
+        "200":
+          description: Restaurants
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Restaurant"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+    post:
+      operationId: createRestaurant
+      tags: [platform]
+      summary: Create a restaurant and its initial owner membership
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RestaurantInput"
+      responses:
+        "201":
+          description: Restaurant created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Restaurant"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+  /platform/restaurants/{restaurantId}:
+    patch:
+      operationId: updatePlatformRestaurant
+      tags: [platform]
+      summary: Update platform restaurant state
+      parameters:
+        - $ref: "#/components/parameters/RestaurantId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RestaurantUpdate"
+      responses:
+        "200":
+          description: Restaurant updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Restaurant"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /restaurants/{restaurantSlug}/dashboard:
+    get:
+      operationId: getRestaurantDashboard
+      tags: [restaurant]
+      summary: Get tenant-scoped dashboard summary
+      parameters:
+        - $ref: "#/components/parameters/RestaurantSlug"
+      responses:
+        "200":
+          description: Dashboard summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardSummary"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /restaurants/{restaurantSlug}/categories:
+    get:
+      operationId: listCategories
+      tags: [restaurant]
+      summary: List tenant menu categories
+      parameters:
+        - $ref: "#/components/parameters/RestaurantSlug"
+      responses:
+        "200":
+          description: Categories
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Category"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+    post:
+      operationId: createCategory
+      tags: [restaurant]
+      summary: Create a menu category
+      parameters:
+        - $ref: "#/components/parameters/RestaurantSlug"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CategoryInput"
+      responses:
+        "201":
+          description: Category created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Category"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+  /restaurants/{restaurantSlug}/categories/{categoryId}:
+    patch:
+      operationId: updateCategory
+      tags: [restaurant]
+      summary: Update a category
+      parameters:
+        - $ref: "#/components/parameters/RestaurantSlug"
+        - $ref: "#/components/parameters/CategoryId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CategoryUpdate"
+      responses:
+        "200":
+          description: Category updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Category"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    delete:
+      operationId: deleteCategory
+      tags: [restaurant]
+      summary: Deactivate a category
+      parameters:
+        - $ref: "#/components/parameters/RestaurantSlug"
+        - $ref: "#/components/parameters/CategoryId"
+      responses:
+        "204":
+          description: Category deactivated
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /restaurants/{restaurantSlug}/menu-items:
+    get:
+      operationId: listMenuItems
+      tags: [restaurant]
+      summary: List tenant menu items
+      parameters:
+        - $ref: "#/components/parameters/RestaurantSlug"
+      responses:
+        "200":
+          description: Menu items
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MenuItem"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+    post:
+      operationId: createMenuItem
+      tags: [restaurant]
+      summary: Create a menu item
+      parameters:
+        - $ref: "#/components/parameters/RestaurantSlug"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MenuItemInput"
+      responses:
+        "201":
+          description: Menu item created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MenuItem"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+  /restaurants/{restaurantSlug}/menu-items/{itemId}:
+    patch:
+      operationId: updateMenuItem
+      tags: [restaurant]
+      summary: Update a menu item
+      parameters:
+        - $ref: "#/components/parameters/RestaurantSlug"
+        - $ref: "#/components/parameters/ItemId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MenuItemUpdate"
+      responses:
+        "200":
+          description: Menu item updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MenuItem"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    delete:
+      operationId: deleteMenuItem
+      tags: [restaurant]
+      summary: Deactivate a menu item
+      parameters:
+        - $ref: "#/components/parameters/RestaurantSlug"
+        - $ref: "#/components/parameters/ItemId"
+      responses:
+        "204":
+          description: Menu item deactivated
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /restaurants/{restaurantSlug}/tables:
+    get:
+      operationId: listTables
+      tags: [restaurant]
+      summary: List restaurant tables
+      parameters:
+        - $ref: "#/components/parameters/RestaurantSlug"
+      responses:
+        "200":
+          description: Tables
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Table"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+    post:
+      operationId: createTable
+      tags: [restaurant]
+      summary: Create a table and secure PIN
+      parameters:
+        - $ref: "#/components/parameters/RestaurantSlug"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TableInput"
+      responses:
+        "201":
+          description: Table created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TableWithPin"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+  /restaurants/{restaurantSlug}/tables/{tableId}:
+    patch:
+      operationId: updateTable
+      tags: [restaurant]
+      summary: Rename or activate a table
+      parameters:
+        - $ref: "#/components/parameters/RestaurantSlug"
+        - $ref: "#/components/parameters/TableId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TableUpdate"
+      responses:
+        "200":
+          description: Table updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Table"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /restaurants/{restaurantSlug}/tables/{tableId}/pin:
+    post:
+      operationId: regenerateTablePin
+      tags: [restaurant]
+      summary: Regenerate a table PIN without changing its QR URL
+      parameters:
+        - $ref: "#/components/parameters/RestaurantSlug"
+        - $ref: "#/components/parameters/TableId"
+      responses:
+        "200":
+          description: New PIN
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PinRotation"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /restaurants/{restaurantSlug}/members:
+    get:
+      operationId: listMembers
+      tags: [restaurant]
+      summary: List restaurant staff memberships
+      parameters:
+        - $ref: "#/components/parameters/RestaurantSlug"
+      responses:
+        "200":
+          description: Members
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Member"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+    post:
+      operationId: inviteMember
+      tags: [restaurant]
+      summary: Add a restaurant staff membership
+      parameters:
+        - $ref: "#/components/parameters/RestaurantSlug"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MemberInput"
+      responses:
+        "201":
+          description: Member created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Member"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+  /restaurants/{restaurantSlug}/settings:
+    get:
+      operationId: getRestaurantSettings
+      tags: [restaurant]
+      summary: Get restaurant settings
+      parameters:
+        - $ref: "#/components/parameters/RestaurantSlug"
+      responses:
+        "200":
+          description: Settings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RestaurantSettings"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+    patch:
+      operationId: updateRestaurantSettings
+      tags: [restaurant]
+      summary: Update restaurant settings
+      parameters:
+        - $ref: "#/components/parameters/RestaurantSlug"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RestaurantSettingsUpdate"
+      responses:
+        "200":
+          description: Settings updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RestaurantSettings"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+  /public/menu/{restaurantSlug}/table/{tableSlug}:
+    get:
+      operationId: getPublicMenu
+      tags: [public]
+      summary: Resolve an active branded customer menu by restaurant and table slug
+      parameters:
+        - $ref: "#/components/parameters/RestaurantSlug"
+        - $ref: "#/components/parameters/TableSlug"
+      responses:
+        "200":
+          description: Public menu
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PublicMenu"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "410":
+          description: Restaurant or table is inactive
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+components:
+  parameters:
+    RestaurantId:
+      name: restaurantId
+      in: path
+      required: true
+      schema:
+        type: string
+        pattern: "^rest_[A-Za-z0-9]+$"
+    RestaurantSlug:
+      name: restaurantSlug
+      in: path
+      required: true
+      schema:
+        type: string
+        minLength: 2
+        maxLength: 80
+        pattern: "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    CategoryId:
+      name: categoryId
+      in: path
+      required: true
+      schema:
+        type: string
+    ItemId:
+      name: itemId
+      in: path
+      required: true
+      schema:
+        type: string
+    TableId:
+      name: tableId
+      in: path
+      required: true
+      schema:
+        type: string
+    TableSlug:
+      name: tableSlug
+      in: path
+      required: true
+      schema:
+        type: string
+        minLength: 2
+        maxLength: 80
+        pattern: "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+  responses:
+    BadRequest:
+      description: Invalid input
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    Unauthorized:
+      description: Authentication required
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    Forbidden:
+      description: Not authorized for this restaurant
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required: [status]
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+        code:
+          type: string
+      required: [error]
+    AuthUser:
+      type: object
+      properties:
+        uid: { type: string }
+        name: { type: ["string", "null"] }
+        email: { type: ["string", "null"] }
+        role:
+          type: ["string", "null"]
+          enum: [platform_admin, owner, manager, staff, null]
+        restaurantSlug: { type: ["string", "null"] }
+      required: [uid, name, email, role, restaurantSlug]
+    AuthSession:
+      type: object
+      properties:
+        authenticated: { type: boolean }
+        user:
+          anyOf:
+            - $ref: "#/components/schemas/AuthUser"
+            - type: "null"
+        firebaseConfigured: { type: boolean }
+      required: [authenticated, user, firebaseConfigured]
+    Restaurant:
+      type: object
+      properties:
+        id: { type: string }
+        name: { type: string }
+        slug: { type: string }
+        ownerEmail: { type: string }
+        phone: { type: string }
+        city: { type: string }
+        tableCount: { type: integer }
+        plan: { type: string, enum: [starter, growth, scale] }
+        status: { type: string, enum: [active, inactive, setup] }
+        createdAt: { type: string, format: date-time }
+      required: [id, name, slug, ownerEmail, phone, city, tableCount, plan, status, createdAt]
+    RestaurantInput:
+      type: object
+      properties:
+        name: { type: string, minLength: 2, maxLength: 120 }
+        slug: { type: string, minLength: 2, maxLength: 80 }
+        ownerName: { type: string, minLength: 2, maxLength: 120 }
+        ownerEmail: { type: string, format: email }
+        phone: { type: string, minLength: 7, maxLength: 30 }
+        city: { type: string, minLength: 2, maxLength: 80 }
+        numberOfTables: { type: integer, minimum: 0, maximum: 500 }
+        plan: { type: string, enum: [starter, growth, scale] }
+        status: { type: string, enum: [active, inactive, setup] }
+      required: [name, slug, ownerName, ownerEmail, phone, city, numberOfTables, plan, status]
+    RestaurantUpdate:
+      type: object
+      properties:
+        name: { type: string, minLength: 2, maxLength: 120 }
+        phone: { type: string, minLength: 7, maxLength: 30 }
+        city: { type: string, minLength: 2, maxLength: 80 }
+        plan: { type: string, enum: [starter, growth, scale] }
+        status: { type: string, enum: [active, inactive, setup] }
+    Category:
+      type: object
+      properties:
+        id: { type: string }
+        name: { type: string }
+        description: { type: string }
+        imageUrl: { type: ["string", "null"] }
+        displayOrder: { type: integer }
+        active: { type: boolean }
+      required: [id, name, description, imageUrl, displayOrder, active]
+    CategoryInput:
+      type: object
+      properties:
+        name: { type: string, minLength: 1, maxLength: 80 }
+        description: { type: string, maxLength: 240 }
+        imageUrl: { type: ["string", "null"] }
+        displayOrder: { type: integer, minimum: 0 }
+        active: { type: boolean }
+      required: [name, description, imageUrl, displayOrder, active]
+    CategoryUpdate:
+      type: object
+      properties:
+        name: { type: string, minLength: 1, maxLength: 80 }
+        description: { type: string, maxLength: 240 }
+        imageUrl: { type: ["string", "null"] }
+        displayOrder: { type: integer, minimum: 0 }
+        active: { type: boolean }
+    MenuItem:
+      type: object
+      properties:
+        id: { type: string }
+        categoryId: { type: string }
+        name: { type: string }
+        description: { type: string }
+        price: { type: number, minimum: 0 }
+        imageUrl: { type: ["string", "null"] }
+        veg: { type: boolean }
+        popular: { type: boolean }
+        available: { type: boolean }
+        displayOrder: { type: integer }
+        updatedAt: { type: string, format: date-time }
+      required: [id, categoryId, name, description, price, imageUrl, veg, popular, available, displayOrder, updatedAt]
+    MenuItemInput:
+      type: object
+      properties:
+        categoryId: { type: string, minLength: 1 }
+        name: { type: string, minLength: 1, maxLength: 120 }
+        description: { type: string, maxLength: 500 }
+        price: { type: number, minimum: 0, maximum: 100000 }
+        imageUrl: { type: ["string", "null"] }
+        veg: { type: boolean }
+        popular: { type: boolean }
+        available: { type: boolean }
+        displayOrder: { type: integer, minimum: 0 }
+      required: [categoryId, name, description, price, imageUrl, veg, popular, available, displayOrder]
+    MenuItemUpdate:
+      type: object
+      properties:
+        categoryId: { type: string, minLength: 1 }
+        name: { type: string, minLength: 1, maxLength: 120 }
+        description: { type: string, maxLength: 500 }
+        price: { type: number, minimum: 0, maximum: 100000 }
+        imageUrl: { type: ["string", "null"] }
+        veg: { type: boolean }
+        popular: { type: boolean }
+        available: { type: boolean }
+        displayOrder: { type: integer, minimum: 0 }
+    Table:
+      type: object
+      properties:
+        id: { type: string }
+        tableNumber: { type: string }
+        slug: { type: string }
+        active: { type: boolean }
+        qrUrl: { type: string, format: uri }
+        createdAt: { type: string, format: date-time }
+      required: [id, tableNumber, slug, active, qrUrl, createdAt]
+    TableInput:
+      type: object
+      properties:
+        tableNumber: { type: string, minLength: 1, maxLength: 40 }
+        active: { type: boolean }
+      required: [tableNumber, active]
+    TableUpdate:
+      type: object
+      properties:
+        tableNumber: { type: string, minLength: 1, maxLength: 40 }
+        active: { type: boolean }
+    TableWithPin:
+      allOf:
+        - $ref: "#/components/schemas/Table"
+        - type: object
+          properties:
+            pin: { type: string, pattern: "^[0-9]{4}$" }
+          required: [pin]
+    PinRotation:
+      type: object
+      properties:
+        pin: { type: string, pattern: "^[0-9]{4}$" }
+        tableId: { type: string }
+      required: [pin, tableId]
+    Member:
+      type: object
+      properties:
+        uid: { type: string }
+        name: { type: ["string", "null"] }
+        email: { type: string, format: email }
+        role: { type: string, enum: [owner, manager, staff] }
+        active: { type: boolean }
+        createdAt: { type: string, format: date-time }
+      required: [uid, name, email, role, active, createdAt]
+    MemberInput:
+      type: object
+      properties:
+        email: { type: string, format: email }
+        name: { type: string, minLength: 2, maxLength: 120 }
+        role: { type: string, enum: [manager, staff] }
+        active: { type: boolean }
+      required: [email, name, role, active]
+    RestaurantSettings:
+      type: object
+      properties:
+        orderingEnabled: { type: boolean }
+        menuEnabled: { type: boolean }
+        restaurantStatus: { type: string, enum: [active, inactive, setup] }
+      required: [orderingEnabled, menuEnabled, restaurantStatus]
+    RestaurantSettingsUpdate:
+      type: object
+      properties:
+        orderingEnabled: { type: boolean }
+        menuEnabled: { type: boolean }
+        restaurantStatus: { type: string, enum: [active, inactive, setup] }
+    DashboardSummary:
+      type: object
+      properties:
+        restaurant: { $ref: "#/components/schemas/Restaurant" }
+        menuItemCount: { type: integer }
+        categoryCount: { type: integer }
+        tableCount: { type: integer }
+        activeItemCount: { type: integer }
+        activeTableCount: { type: integer }
+        setupProgress: { type: integer, minimum: 0, maximum: 100 }
+      required: [restaurant, menuItemCount, categoryCount, tableCount, activeItemCount, activeTableCount, setupProgress]
+    PublicMenu:
+      type: object
+      properties:
+        restaurant:
+          type: object
+          properties:
+            name: { type: string }
+            slug: { type: string }
+            logoUrl: { type: ["string", "null"] }
+            city: { type: string }
+            currency: { type: string }
+          required: [name, slug, logoUrl, city, currency]
+        table:
+          type: object
+          properties:
+            number: { type: string }
+            slug: { type: string }
+          required: [number, slug]
+        categories:
+          type: array
+          items: { $ref: "#/components/schemas/Category" }
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/MenuItem" }
+      required: [restaurant, table, categories, items]

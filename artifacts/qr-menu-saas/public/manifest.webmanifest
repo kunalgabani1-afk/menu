@@ -1,0 +1,21 @@
+{
+  "id": "/?source=pwa",
+  "name": "Tableline - Restaurant Ordering SaaS",
+  "short_name": "Tableline",
+  "description": "Production-ready restaurant QR ordering, digital menu, and kitchen operations SaaS.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#fbf9f4",
+  "theme_color": "#183b3e",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["business", "food", "productivity"]
+}

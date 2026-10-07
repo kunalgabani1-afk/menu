@@ -1,0 +1,90 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "platformAdmins": {
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid && data.val() === true",
+        ".write": false
+      }
+    },
+    "users": {
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid",
+        ".write": "auth != null && auth.uid === $uid && !data.exists()",
+        "restaurants": {
+          "$restaurantId": {
+            ".read": "auth != null && auth.uid === $uid",
+            ".write": false
+          }
+        }
+      }
+    },
+    "restaurantSlugs": {
+      "$slug": {
+        ".read": true,
+        ".write": "auth != null && root.child('platformAdmins').child(auth.uid).val() === true"
+      }
+    },
+    "restaurants": {
+      "$restaurantId": {
+        "profile": {
+          ".read": "auth != null && (root.child('platformAdmins').child(auth.uid).val() === true || root.child('users').child(auth.uid).child('restaurants').child($restaurantId).child('active').val() === true)",
+          ".write": "auth != null && (root.child('platformAdmins').child(auth.uid).val() === true || (root.child('users').child(auth.uid).child('restaurants').child($restaurantId).child('role').val() === 'owner' && root.child('users').child(auth.uid).child('restaurants').child($restaurantId).child('active').val() === true))"
+        },
+        "settings": {
+          ".read": "data.child('restaurantStatus').val() === 'active' || (auth != null && (root.child('platformAdmins').child(auth.uid).val() === true || root.child('users').child(auth.uid).child('restaurants').child($restaurantId).child('active').val() === true))",
+          ".write": "auth != null && (root.child('platformAdmins').child(auth.uid).val() === true || root.child('users').child(auth.uid).child('restaurants').child($restaurantId).child('role').val() === 'owner')"
+        },
+        "categories": {
+          ".read": "auth != null && (root.child('platformAdmins').child(auth.uid).val() === true || root.child('users').child(auth.uid).child('restaurants').child($restaurantId).child('active').val() === true)",
+          "$categoryId": {
+            ".write": "auth != null && (root.child('platformAdmins').child(auth.uid).val() === true || root.child('users').child(auth.uid).child('restaurants').child($restaurantId).child('role').val() in ['owner', 'manager'])"
+          }
+        },
+        "menuItems": {
+          ".read": "auth != null && (root.child('platformAdmins').child(auth.uid).val() === true || root.child('users').child(auth.uid).child('restaurants').child($restaurantId).child('active').val() === true)",
+          "$itemId": {
+            ".write": "auth != null && (root.child('platformAdmins').child(auth.uid).val() === true || root.child('users').child(auth.uid).child('restaurants').child($restaurantId).child('role').val() in ['owner', 'manager'])"
+          }
+        },
+        "tables": {
+          ".read": "auth != null && (root.child('platformAdmins').child(auth.uid).val() === true || root.child('users').child(auth.uid).child('restaurants').child($restaurantId).child('active').val() === true)",
+          "$tableId": {
+            ".write": "auth != null && (root.child('platformAdmins').child(auth.uid).val() === true || root.child('users').child(auth.uid).child('restaurants').child($restaurantId).child('role').val() in ['owner', 'manager'])",
+            "pinHash": {
+              ".read": "auth != null && (root.child('platformAdmins').child(auth.uid).val() === true || root.child('users').child(auth.uid).child('restaurants').child($restaurantId).child('role').val() in ['owner', 'manager'])"
+            }
+          }
+        },
+        "tableSessions": {
+          ".read": "auth != null && (root.child('platformAdmins').child(auth.uid).val() === true || root.child('users').child(auth.uid).child('restaurants').child($restaurantId).child('active').val() === true)",
+          "$sessionId": {
+            ".write": "auth != null && (root.child('platformAdmins').child(auth.uid).val() === true || root.child('users').child(auth.uid).child('restaurants').child($restaurantId).child('role').val() in ['owner', 'manager', 'staff'])"
+          }
+        },
+        "members": {
+          ".read": "auth != null && (root.child('platformAdmins').child(auth.uid).val() === true || root.child('users').child(auth.uid).child('restaurants').child($restaurantId).child('active').val() === true)",
+          "$uid": {
+            ".write": "auth != null && (root.child('platformAdmins').child(auth.uid).val() === true || root.child('users').child(auth.uid).child('restaurants').child($restaurantId).child('role').val() === 'owner')"
+          }
+        },
+        "orders": {
+          ".read": "auth != null && (root.child('platformAdmins').child(auth.uid).val() === true || root.child('users').child(auth.uid).child('restaurants').child($restaurantId).child('active').val() === true)",
+          "$orderId": {
+            ".read": "auth != null && (root.child('platformAdmins').child(auth.uid).val() === true || root.child('users').child(auth.uid).child('restaurants').child($restaurantId).child('active').val() === true)",
+            ".write": false
+          }
+        },
+        "pendingHostApprovals": {
+          ".read": "auth != null && (root.child('platformAdmins').child(auth.uid).val() === true || root.child('users').child(auth.uid).child('restaurants').child($restaurantId).child('active').val() === true)",
+          ".write": false
+        },
+        "auditLogs": {
+          ".read": "auth != null && (root.child('platformAdmins').child(auth.uid).val() === true || (root.child('users').child(auth.uid).child('restaurants').child($restaurantId).child('role').val() === 'owner' && root.child('users').child(auth.uid).child('restaurants').child($restaurantId).child('active').val() === true))",
+          ".write": false
+        }
+      }
+    }
+  }
+}

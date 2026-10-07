@@ -1,0 +1,861 @@
+# PHASE 1 — PRODUCTION FOUNDATION, MULTI-TENANT SAAS & QR MENU
+
+## Goal
+
+Build the production foundation of a multi-tenant QR restaurant ordering SaaS.
+
+The system will support multiple restaurants from ONE Firebase project.
+
+Each restaurant must have its own isolated data, dashboard, menu, tables, QR codes, staff accounts and settings.
+
+Do NOT build ordering/payment/kitchen functionality yet. Phase 1 focuses on the production foundation, authentication, restaurant management, menu CMS, table management and customer-facing QR menu.
+
+---
+
+# 1. TECH STACK
+
+Use:
+
+* Next.js latest stable
+* App Router
+* TypeScript
+* Tailwind CSS
+* Firebase Authentication
+* Firebase Realtime Database
+* Firebase Storage
+* Firebase Security Rules
+* Firebase Admin SDK where server-side privileged operations are required
+* QR generation library
+* PWA-ready architecture
+* Server-side validation
+* Environment variables for secrets
+
+Use clean modular architecture.
+
+Do not put everything into one giant component.
+
+---
+
+# 2. MULTI-TENANT ARCHITECTURE
+
+There will be ONE Firebase project.
+
+Multiple restaurants live inside the same Firebase project.
+
+Every restaurant has a unique immutable `restaurantId`.
+
+Example:
+
+restaurantId:
+`rest_8F72KQ`
+
+Restaurant:
+
+```text
+restaurants/
+  rest_8F72KQ/
+    profile/
+    settings/
+    categories/
+    menuItems/
+    tables/
+    users/
+```
+
+Never trust a restaurantId supplied by the browser.
+
+The authenticated user's restaurant membership must determine which restaurant they can access.
+
+Every restaurant-specific database read/write must be authorized by Firebase Security Rules.
+
+A user from Restaurant A must NEVER be able to access Restaurant B's data.
+
+---
+
+# 3. URL ARCHITECTURE
+
+The public website uses:
+
+```text
+/
+```
+
+Restaurant customer menu:
+
+```text
+/menu/{restaurantSlug}/table/{tableSlug}
+```
+
+Example:
+
+```text
+/menu/cafe-mocha/table/table-04
+```
+
+Restaurant admin must use the restaurant-specific URL:
+
+```text
+/{restaurantSlug}/admin
+```
+
+Example:
+
+```text
+/cafe-mocha/admin
+```
+
+Login:
+
+```text
+/login
+```
+
+Platform owner/admin:
+
+```text
+/admin
+```
+
+The platform `/admin` is NOT the restaurant admin.
+
+Restaurant dashboard must always know which restaurant it belongs to.
+
+---
+
+# 4. RESTAURANT SLUG SECURITY
+
+Restaurant slug is only for routing and discovery.
+
+Never use slug as a security mechanism.
+
+Example:
+
+```text
+/cafe-mocha/admin
+```
+
+must NOT mean anyone can access Cafe Mocha's dashboard.
+
+The user must:
+
+1. Authenticate
+2. Have an active account
+3. Have membership in that restaurant
+4. Have an appropriate role
+
+If the authenticated user does not belong to the restaurant:
+
+Return:
+
+```text
+403 Forbidden
+```
+
+Do not reveal restaurant information.
+
+---
+
+# 5. USER ROLES
+
+Implement:
+
+### Platform Admin
+
+Can manage the entire SaaS platform.
+
+### Restaurant Owner
+
+Can manage their restaurant.
+
+### Restaurant Manager
+
+Can manage operational restaurant data according to permissions.
+
+### Restaurant Staff
+
+Limited operational access.
+
+Create a proper role/permission system.
+
+Never rely only on frontend hiding.
+
+Backend/Firebase rules must enforce permissions.
+
+---
+
+# 6. AUTHENTICATION
+
+Use Firebase Authentication.
+
+Support:
+
+* Email/password login
+* Secure logout
+* Password reset
+* Session persistence
+* Protected routes
+* Authentication state handling
+
+Never store passwords in Realtime Database.
+
+Never store passwords in restaurant documents.
+
+Never expose Firebase Admin credentials to the browser.
+
+Use environment variables for server-side credentials.
+
+---
+
+# 7. RESTAURANT ADMIN ROUTE PROTECTION
+
+When visiting:
+
+```text
+/cafe-mocha/admin
+```
+
+perform:
+
+1. Check authentication.
+2. Resolve restaurant by slug.
+3. Determine user's restaurant membership.
+4. Verify role.
+5. Verify restaurant is active.
+6. Only then render dashboard.
+
+If not authenticated:
+
+Redirect to:
+
+```text
+/login
+```
+
+If authenticated but unauthorized:
+
+Show a clean 403 page.
+
+Never render sensitive restaurant data before authorization.
+
+---
+
+# 8. DATABASE STRUCTURE
+
+Use a clean structure similar to:
+
+```text
+restaurants/
+  {restaurantId}/
+    profile/
+      name
+      slug
+      logoUrl
+      phone
+      email
+      address
+      city
+      timezone
+      currency
+      createdAt
+      updatedAt
+
+    settings/
+      orderingEnabled
+      menuEnabled
+      restaurantStatus
+
+    categories/
+      {categoryId}/
+        name
+        description
+        imageUrl
+        displayOrder
+        active
+
+    menuItems/
+      {itemId}/
+        categoryId
+        name
+        description
+        price
+        imageUrl
+        veg
+        popular
+        available
+        displayOrder
+        createdAt
+        updatedAt
+
+    tables/
+      {tableId}/
+        tableNumber
+        slug
+        active
+        pinHash
+        createdAt
+        updatedAt
+
+    members/
+      {uid}/
+        role
+        active
+        createdAt
+
+users/
+  {uid}/
+    name
+    email
+    restaurants/
+      {restaurantId}/
+        role
+        active
+
+restaurantSlugs/
+  {slug}/
+    restaurantId
+    active
+```
+
+Keep IDs immutable.
+
+Do not use restaurant names as database IDs.
+
+---
+
+# 9. RESTAURANT CREATION
+
+Platform admin can create a restaurant.
+
+Fields:
+
+* Restaurant name
+* Slug
+* Owner name
+* Owner email
+* Phone
+* City
+* Number of tables
+* Selected plan
+* Status
+
+Generate:
+
+* Restaurant ID
+* Restaurant slug
+* Owner account/membership
+* Initial settings
+
+Prevent duplicate slugs.
+
+Normalize slug safely.
+
+Example:
+
+```text
+Cafe Mocha
+```
+
+becomes:
+
+```text
+cafe-mocha
+```
+
+---
+
+# 10. MENU MANAGEMENT
+
+Restaurant owner can:
+
+* Create category
+* Edit category
+* Delete/deactivate category
+* Reorder categories
+* Create menu item
+* Edit item
+* Delete/deactivate item
+* Change price
+* Upload image
+* Toggle availability
+* Mark popular
+* Set veg/non-veg
+* Reorder items
+
+Menu changes must update the customer menu automatically.
+
+IMPORTANT:
+
+Changing a menu item must NEVER require generating a new QR code.
+
+QR points to restaurant/table, not to a specific menu item.
+
+---
+
+# 11. IMAGE STORAGE
+
+Food images must be stored in Firebase Storage.
+
+Do NOT store image binaries inside Realtime Database.
+
+Validate uploads:
+
+* File type
+* File size
+* Image dimensions where practical
+
+Only authorized restaurant users can upload/delete restaurant assets.
+
+Prevent one restaurant from accessing another restaurant's Storage paths.
+
+---
+
+# 12. TABLE MANAGEMENT
+
+Restaurant admin can:
+
+* Create tables
+* Rename table
+* Activate/deactivate table
+* Generate QR
+* Regenerate table PIN
+* Download QR
+* Print QR
+* View table status
+
+Example:
+
+```text
+Table 01
+Table 02
+Table 03
+Table 04
+```
+
+Each table receives:
+
+* Unique table ID
+* Table number
+* Public table slug
+* Random table PIN
+
+The QR URL should look like:
+
+```text
+https://yourdomain.com/menu/cafe-mocha/table/table-04
+```
+
+The QR must NOT contain:
+
+* Firebase credentials
+* Admin information
+* Passwords
+* Secret keys
+* Sensitive data
+
+---
+
+# 13. TABLE PIN SECURITY
+
+QR codes are not secrets.
+
+Anyone can photograph/share a QR.
+
+Therefore create a table PIN system.
+
+Example:
+
+```text
+Table 04
+PIN: 7392
+```
+
+Do not store the raw PIN.
+
+Store a secure hash.
+
+PIN should be regeneratable without changing the QR URL.
+
+Customer ordering security will be completed in Phase 2/3.
+
+For Phase 1, implement the foundation needed for PIN validation.
+
+---
+
+# 14. CUSTOMER MENU
+
+Customer-facing menu must be completely different from admin UI.
+
+It must be:
+
+* Mobile-first
+* Fast
+* Clean
+* Premium
+* Restaurant-branded
+* Easy to browse
+
+Include:
+
+* Restaurant logo
+* Restaurant name
+* Categories
+* Search
+* Popular items
+* Menu item cards
+* Price
+* Description
+* Veg/non-veg indicator
+* Availability
+* Food image
+* Category navigation
+
+Use sticky horizontal category navigation.
+
+Large menus must remain easy to browse.
+
+---
+
+# 15. CUSTOMER URL VALIDATION
+
+When customer opens:
+
+```text
+/menu/cafe-mocha/table/table-04
+```
+
+validate:
+
+1. Restaurant exists.
+2. Restaurant is active.
+3. Slug maps to correct restaurantId.
+4. Table exists.
+5. Table belongs to that restaurant.
+6. Table is active.
+
+Never trust a restaurantId/tableId supplied by the browser.
+
+---
+
+# 16. QR SECURITY
+
+QR codes identify a restaurant/table.
+
+They do NOT authorize sensitive operations.
+
+Do not assume:
+
+```text
+having QR = permission to create unlimited orders
+```
+
+Phase 2/3 will enforce:
+
+* Table PIN
+* Rate limiting
+* Quantity limits
+* Order limits
+* Payment validation
+* Server-side validation
+* Abuse protection
+
+---
+
+# 17. FIREBASE SECURITY RULES
+
+Write real production Firebase Security Rules.
+
+Rules must enforce:
+
+### Customer
+
+Can only read public active menu information.
+
+Cannot:
+
+* Modify menu
+* Modify prices
+* Modify restaurant settings
+* Modify tables
+* Read private staff data
+* Read owner data
+
+### Restaurant Owner
+
+Can only access their own restaurant.
+
+### Restaurant Manager
+
+Only permitted operations.
+
+### Restaurant Staff
+
+Only permitted operational data.
+
+### Platform Admin
+
+Platform-level access.
+
+Never use:
+
+```text
+".read": true
+".write": true
+```
+
+for production restaurant data.
+
+Do not use frontend checks as the only security layer.
+
+---
+
+# 18. PRICE SECURITY FOUNDATION
+
+The browser must NEVER be trusted for pricing.
+
+The customer UI can display:
+
+```text
+₹180
+```
+
+but the server/database is the source of truth.
+
+When ordering is implemented in Phase 2:
+
+* Server retrieves current item price
+* Server validates availability
+* Server calculates total
+* Client-submitted price is ignored
+
+Prepare architecture for this now.
+
+---
+
+# 19. SECURITY REQUIREMENTS
+
+Implement protection against:
+
+* Cross-restaurant data access
+* Unauthorized admin access
+* IDOR
+* Client-side role manipulation
+* Client-side restaurantId manipulation
+* Slug manipulation
+* Unauthorized Storage access
+* Price tampering foundation
+* XSS
+* Unsafe HTML rendering
+* Malicious file uploads
+* Oversized uploads
+* Duplicate restaurant slugs
+* Unauthorized menu modification
+* Unauthorized table modification
+
+Validate all important inputs.
+
+Do not trust:
+
+* URL params
+* Query params
+* LocalStorage
+* Client-side role
+* Client-side restaurantId
+* Client-side prices
+
+---
+
+# 20. ADMIN DASHBOARD UI
+
+Restaurant dashboard:
+
+```text
+Overview
+Menu
+Categories
+Tables
+QR Codes
+Staff
+Restaurant Settings
+Account
+```
+
+Dashboard overview should show:
+
+* Restaurant name
+* Menu item count
+* Category count
+* Table count
+* Active items
+* Setup progress
+
+Keep it clean and premium.
+
+---
+
+# 21. PLATFORM ADMIN
+
+Create private:
+
+```text
+/admin
+```
+
+Platform dashboard.
+
+Sections:
+
+```text
+Overview
+Leads
+Restaurants
+Plans
+Subscriptions
+Setup
+Support
+Platform Settings
+```
+
+Platform admin can:
+
+* Create restaurant
+* Edit restaurant
+* Activate/deactivate restaurant
+* Assign owner
+* Assign plan
+* View setup progress
+* Manage accounts
+* View restaurant status
+
+Do not expose `/admin` functionality to restaurant users.
+
+---
+
+# 22. DESIGN SYSTEM
+
+Design direction:
+
+Premium modern cafe SaaS.
+
+Use:
+
+* White / cream backgrounds
+* Warm coffee/brown accent
+* Muted green for success
+* Red for errors
+* Dark charcoal text
+* Rounded cards
+* Soft borders
+* Subtle shadows
+* Excellent spacing
+* Modern typography
+* Strong hierarchy
+
+Avoid:
+
+* Excessive gradients
+* Excessive glassmorphism
+* Neon colors
+* Overloaded dashboards
+* Huge unnecessary animations
+
+Customer menu should feel like a premium restaurant menu.
+
+Admin should feel like a professional SaaS dashboard.
+
+---
+
+# 23. ERROR HANDLING
+
+Create:
+
+* Loading states
+* Empty states
+* Error states
+* 404
+* 403
+* Unauthorized
+* Restaurant inactive
+* Table inactive
+* Network error
+* Firebase error handling
+
+Never show raw Firebase errors to customers.
+
+---
+
+# 24. NO FAKE DATA
+
+Do NOT use fake restaurant/menu/order data in production UI.
+
+If seed data is required for development, clearly separate development seed scripts from production.
+
+---
+
+# 25. PHASE 1 ACCEPTANCE TEST
+
+Before considering Phase 1 complete, verify:
+
+### Multi-tenancy
+
+* Restaurant A cannot access Restaurant B.
+* Restaurant A owner cannot modify Restaurant B.
+* Restaurant A cannot read Restaurant B private data.
+
+### URLs
+
+```text
+/cafe-a/admin
+/cafe-b/admin
+```
+
+work independently.
+
+### Menu
+
+Changing price updates customer menu.
+
+Changing availability hides/disables item.
+
+Adding an item appears without changing QR.
+
+### QR
+
+QR correctly opens:
+
+```text
+/menu/{restaurantSlug}/table/{tableSlug}
+```
+
+### Security
+
+Unauthenticated user cannot access admin.
+
+Restaurant user cannot access `/admin`.
+
+Client cannot modify restaurantId to access another restaurant.
+
+Storage isolation works.
+
+### Production
+
+No secrets exposed in browser.
+
+No passwords stored in database.
+
+No unrestricted Firebase rules.
+
+No fake production data.
+
+---
+
+# IMPORTANT
+
+Do not implement Phase 2 features yet.
+
+Do not build payments yet.
+
+Do not build kitchen yet.
+
+Do not build advanced AI yet.
+
+Finish Phase 1, test it thoroughly, fix all security issues, then continue to Phase 2.
